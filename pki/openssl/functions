@@ -1,0 +1,60 @@
+###############################
+# Some variables              #
+###############################
+
+pki_v="0.0.3"
+
+###############################
+# Some functions              #
+###############################
+
+headers(){
+echo "               ______         __     __           __              "
+echo "              |      |.--.--.|  |--.|  |.-----.--|  |.-----.--.--."
+echo "              |   ---||  |  ||    < |  ||  _  |  _  ||  -__|  |  |"
+echo "              |______||___  ||__|__||__||_____|_____||_____|\___/ "
+echo "                      |_____|                                     "
+echo "                             Cyklodev PKI tools v ${pki_v}        "
+}
+create_folders(){
+        echo "Generate folders structure";
+        mkdir certs private ;
+}
+get_password(){
+        echo "Type your ROOT passphrase";
+        read root_passphrase
+        echo "Retype to be sure ...";
+        read root_passphrase2
+        if [[ $root_passphrase == $root_passphrase2 ]]
+        then
+                echo "OK - Passphrase match"
+        else
+                echo "KO - Passphrase does not match"
+                exit 100
+        fi
+}
+yes_no(){
+    question=${1}
+    while true; do
+        read -p "${question} [y/n]: " yn
+        case $yn in
+                [Yy]*) return 0  ;;
+                [Nn]*) echo "Aborted" ; return  1 ;;
+        esac
+    done
+}
+clean_out(){
+        echo ""
+        echo ${1}
+        echo ""
+}
+gratz(){
+        echo "##################################################"
+        echo "###      Congratulation !!!! ROOTCA created      #"
+        echo "##################################################"
+}
+thanks(){
+        echo "##################################################"
+        echo "###      Thanks for using :)                     #"
+        echo "##################################################"
+}
