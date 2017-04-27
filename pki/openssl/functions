@@ -18,7 +18,7 @@ echo "                             Cyklodev PKI tools v ${pki_v}        "
 }
 create_folders(){
         echo "Generate folders structure";
-        mkdir certs private ;
+        mkdir certs private csr;
 }
 get_password(){
         echo "Type your ROOT passphrase";
@@ -33,13 +33,30 @@ get_password(){
                 exit 100
         fi
 }
+get_password_server(){
+        echo "Type your $SSERVER passphrase";
+        read server_passphrase
+        echo "Retype to be sure ...";
+        read server_passphrase2
+        if [[ $server_passphrase == $server_passphrase2 ]]
+        then
+                echo "OK - Passphrase match"
+        else
+                echo "KO - Passphrase does not match"
+                exit 100
+        fi
+}
+get_server_name(){
+	echo "Type your server name";
+	read SSERVER
+}
 yes_no(){
     question=${1}
     while true; do
         read -p "${question} [y/n]: " yn
         case $yn in
                 [Yy]*) return 0  ;;
-                [Nn]*) echo "Aborted" ; return  1 ;;
+                [Nn]*) echo "Aborted" ; exit ;;
         esac
     done
 }
@@ -50,7 +67,7 @@ clean_out(){
 }
 gratz(){
         echo "##################################################"
-        echo "###      Congratulation !!!! ROOTCA created      #"
+        echo "###      Congratulation !!!! ${1} created      #"
         echo "##################################################"
 }
 thanks(){

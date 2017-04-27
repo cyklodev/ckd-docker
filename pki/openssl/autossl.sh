@@ -13,14 +13,22 @@ then
 else
         echo "OK - folder detected"
 fi
-if [ -r openssl.conf ]
+if [ -r root.conf ]
 then
-        echo "OK - config file present"
+        echo "OK - ROOT config file present"
 else
-        echo "KO - config file not available"
+        echo "KO - ROOT config file not available"
         ecit 100
 fi
-if [ -r certs/ca.cert.pem ]
+
+if [ -r openssl.conf ]
+then
+        echo "OK - OpenSSL config file present"
+else
+        echo "KO - OpenSSL config file not available"
+        ecit 100
+fi
+if [ -r certs/ROOT.cert.pem ]
 then
         echo "OK - ROOT certificat already present."
         echo "ABORTING process..."
