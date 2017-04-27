@@ -6,7 +6,8 @@
 
 A docker toolbox to build a PKI infrastructure
 *Note:*
-```docker run -ti cyklodev/pki:latest sh -l 
+```
+docker run -ti cyklodev/pki:latest sh -l 
 cd /etc/openvpn
 vi root.conf
 ./autossl.sh
