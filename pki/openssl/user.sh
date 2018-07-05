@@ -13,7 +13,7 @@ cd /etc/openssl
 ###############################
 
 root_passphrase=""
-SSERVER=""
+SUSER=""
 
 ###############################
 # Let the magic happend       #
@@ -21,26 +21,26 @@ SSERVER=""
 
 headers
 
-clean_out "Start providing the server name"
-get_server_name
-commonname=${SSERVER}
+clean_out "Start providing the user name"
+get_user_name
+commonname=${SUSER}
 
-clean_out "Start providing the server password"
-get_password_server
+clean_out "Start providing the user password"
+get_password_user
 
 clean_out
-yes_no "Would you like to generate the Key for ${SSERVER} with password  [ ${server_passphrase} ]?"
+yes_no "Would you like to generate the Key for ${SUSER} with password  [ ${server_passphrase} ]?"
 clean_out
 
 openssl genrsa -des -out /etc/openssl/private/${commonname}.key.pem -passout pass:${server_passphrase} 4096
 
 clean_out
-yes_no "Would you like to ask for sigin for ${SSERVER} ?"
+yes_no "Would you like to ask for sigin for ${SUSER} ?"
 clean_out
 
 openssl req -config /etc/openssl/openssl.conf -subj "/C=$country/ST=$state/L=$locality/O=$organization/OU=$organizationalunit/CN=$commonname/emailAddress=$email" -new -passin pass:${server_passphrase} -key /etc/openssl/private/${commonname}.key.pem -out /etc/openssl/csr/${commonname}.csr
 
-yes_no "Would you like to sign the Crt for ${SSERVER} ?"
+yes_no "Would you like to sign the Crt for ${SUSER} ?"
 clean_out
 
 clean_out "Provide the ROOTCA password"
@@ -48,22 +48,20 @@ get_password
 clean_out
 
 
-openssl x509 -req -in /etc/openssl/csr/${commonname}.csr -passin pass:${root_passphrase} -CA /etc/openssl/certs/ROOT.cert.pem -CAkey /etc/openssl/private/ROOT.key.pem -CAcreateserial -out /etc/openssl/certs/${commonname}.crt.pem -days 500 -sha256
+openssl x509 -req -in csr/${commonname}.csr -passin pass:${root_passphrase} -CA /etc/openssl/certs/ROOT.cert.pem -CAkey /etc/openssl/private/ROOT.key.pem -CAcreateserial -out /etc/openssl/users/${commonname}.crt.pem -days 500 -sha256
 
 
 
-yes_no "Would you like to test the Crt for ${SSERVER} ?"
+yes_no "Would you like to test the Crt for ${SUSER} ?"
 clean_out
 
-openssl verify -CAfile /etc/openssl/certs/ROOT.cert.pem /etc/openssl/certs/${commonname}.crt.pem
+openssl verify -CAfile /etc/openssl/certs/ROOT.cert.pem /etc/openssl/users/${commonname}.crt.pem
 
 
-
-yes_no "Would you like to remove passphrase in NGINX  ${SSERVER} ?"
+yes_no "Would you like to export the Crt for in P12 ${SUSER} ?"
 clean_out
 
-openssl rsa -in /etc/openssl/private/${commonname}.key.pem -out /etc/openssl/private/${commonname}.nginx.key
-
+openssl pkcs12 -export -inkey /etc/openssl/private/${commonname}.key.pem  -in /etc/openssl/users/${commonname}.crt.pem -name ${commonname} -out /etc/openssl/users/${commonname}.pfx
 
 if [[ $? -eq 0 ]]
 then
