@@ -28,6 +28,10 @@ clean_out "Look file permissions"
 chmod 400  /etc/openssl/private/${commonname}.key.pem
 chmod 400  /etc/openssl/certs/${commonname}.cert.pem
 
+clean_out "Generate the CRL "
+openssl ca -config /etc/openssl/openssl.conf -gencrl -keyfile /etc/openssl/private/${commonname}.key.pem -cert /etc/openssl/certs/${commonname}.cert.pem -out /etc/openssl/crl/root.crl.pem
+openssl crl -inform PEM -in /etc/openssl/crl/root.crl.pem -outform DER -out /etc/openssl/crl/root.crl
+
 if [[ -r /etc/openssl/certs/${commonname}.cert.pem ]]
 then
 	gratz "ROOTCA"

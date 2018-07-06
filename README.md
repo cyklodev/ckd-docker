@@ -4,7 +4,7 @@
 ## pki
 [PKI box](https://hub.docker.com/r/cyklodev/pki/ "ckd-pki image")  
 
-A docker toolbox to build a PKI infrastructure
+A docker toolbox to build a PKI infrastructure including pfx and crl
 *Note:*
 ```
 docker run -ti cyklodev/pki:latest sh -l 
@@ -12,6 +12,9 @@ cd /etc/openvpn
 vi root.conf
 ./autossl.sh
 ./server.sh
+./user.sh
+./revoke.sh
+./deploy_crl.sh
 ```
 ## py-ready
 [python3 box](https://hub.docker.com/r/cyklodev/py-ready/ "py-ready image") 

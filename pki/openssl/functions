@@ -2,7 +2,7 @@
 # Some variables              #
 ###############################
 
-pki_v="0.0.3"
+pki_v="0.1.0"
 
 ###############################
 # Some functions              #
@@ -18,7 +18,9 @@ echo "                             Cyklodev PKI tools v ${pki_v}        "
 }
 create_folders(){
         echo "Generate folders structure";
-        mkdir certs private csr;
+        mkdir /etc/openssl/certs /etc/openssl/private /etc/openssl/users /etc/openssl/csr /etc/openssl/crl /etc/openssl/db;
+		touch /etc/openssl/db/index.txt
+		echo 1000 > /etc/openssl/crl/crlnumber
 }
 get_password(){
         echo "Type your ROOT passphrase";
@@ -46,9 +48,30 @@ get_password_server(){
                 exit 100
         fi
 }
+get_password_user(){
+        echo "Type your $SUSER passphrase";
+        read server_passphrase
+        echo "Retype to be sure ...";
+        read server_passphrase2
+        if [[ $server_passphrase == $server_passphrase2 ]]
+        then
+                echo "OK - Passphrase match"
+        else
+                echo "KO - Passphrase does not match"
+                exit 100
+        fi
+}
 get_server_name(){
 	echo "Type your server name";
 	read SSERVER
+}
+get_user_name(){
+	echo "Type your user name";
+	read SUSER
+}
+get_cert_name(){
+	echo "Type your certificate name";
+	read SCERT
 }
 yes_no(){
     question=${1}
@@ -60,6 +83,17 @@ yes_no(){
         esac
     done
 }
+no_yes(){
+    question=${1}
+    while true; do
+        read -p "${question} [y/n]: " yn
+        case $yn in
+                [Nn]*) return 0  ;;
+                [Yy]*) echo "Aborted" ; exit ;;
+        esac
+    done
+}
+
 clean_out(){
         echo ""
         echo ${1}
